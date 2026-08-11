@@ -1,2 +1,112 @@
-"use client";import{useState}from"react";import{QUESTIONS,calculateAxiora}from"../lib/axiora";
-export default function Home(){const[a,setA]=useState(Array(35).fill(null)),[i,setI]=useState(0),[r,setR]=useState(null);if(r)return <main style={S.main}><section style={S.card}><h1>AXIORA</h1><h2>Your Profile</h2><h3>{r.classification}</h3>{Object.entries(r.scores).map(([k,v])=><p key={k}>{k.replace(/^F\d+_/,"")}: <b>{v}</b></p>)}<h3>Primary: {r.primary.replace(/^F\d+_/,"")}</h3><h3>Secondary: {r.secondary.replace(/^F\d+_/,"")}</h3><p>F8 Prototype Integration Score: <b>{r.f8}</b></p><small>AXIORA V1.0 is a working prototype and not scientifically validated.</small></section></main>;return <main style={S.main}><section style={S.card}><h1>AXIORA</h1><p>Question {i+1} / 35</p><div style={S.q}>{QUESTIONS[i]}</div>{[1,2,3,4,5].map(v=><button key={v} style={{...S.btn,...(a[i]===v?S.sel:{})}} onClick={()=>{let x=[...a];x[i]=v;setA(x)}}>{v}</button>)}<br/><button style={S.next} disabled={a[i]==null} onClick={()=>i===34?setR(calculateAxiora(a)) : setI(i+1)}>{i===34?"Analyze My Profile":"Next →"}</button></section></main>}const S={main:{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20,background:"linear-gradient(135deg,#07111f,#102b49)"},card:{width:"min(700px,100%)",padding:30,borderRadius:22,background:"#0d2035",textAlign:"center"},q:{fontSize:22,lineHeight:1.5,margin:"30px 0"},btn:{margin:6,width:52,height:52,borderRadius:12,border:"1px solid #39617e",background:"#132d45",color:"#fff",fontSize:18},sel:{background:"#2699f5"},next:{marginTop:25,padding:"14px 24px",border:0,borderRadius:12,background:"#2699f5",color:"#fff",fontWeight:700}}
+"use client";
+
+import { useState } from "react";
+
+export default function Home() {
+  const [name, setName] = useState("");
+  const [dob, setDob] = useState("");
+  const [result, setResult] = useState("");
+
+  function analyze() {
+    if (!name || !dob) {
+      setResult("Please enter your name and date of birth.");
+      return;
+    }
+
+    const numbers = dob.replace(/-/g, "").split("").map(Number);
+    const total = numbers.reduce((a, b) => a + b, 0);
+
+    let number = total;
+    while (number > 9) {
+      number = String(number)
+        .split("")
+        .map(Number)
+        .reduce((a, b) => a + b, 0);
+    }
+
+    setResult(`AXIORA Number: ${number}`);
+  }
+
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        padding: "40px 20px",
+        fontFamily: "Arial, sans-serif",
+        background: "#080b12",
+        color: "white",
+      }}
+    >
+      <div style={{ maxWidth: 600, margin: "auto" }}>
+        <h1 style={{ fontSize: 42, marginBottom: 8 }}>AXIORA</h1>
+
+        <p style={{ color: "#9ca3af", marginBottom: 30 }}>
+          Advanced Numerology Intelligence System
+        </p>
+
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+          style={{
+            width: "100%",
+            padding: 16,
+            marginBottom: 15,
+            borderRadius: 10,
+            border: "1px solid #333",
+            background: "#111827",
+            color: "white",
+            boxSizing: "border-box",
+          }}
+        />
+
+        <input
+          type="date"
+          value={dob}
+          onChange={(e) => setDob(e.target.value)}
+          style={{
+            width: "100%",
+            padding: 16,
+            marginBottom: 20,
+            borderRadius: 10,
+            border: "1px solid #333",
+            background: "#111827",
+            color: "white",
+            boxSizing: "border-box",
+          }}
+        />
+
+        <button
+          onClick={analyze}
+          style={{
+            width: "100%",
+            padding: 16,
+            borderRadius: 10,
+            border: "none",
+            background: "#22c55e",
+            color: "#061006",
+            fontSize: 18,
+            fontWeight: "bold",
+          }}
+        >
+          ANALYZE
+        </button>
+
+        {result && (
+          <div
+            style={{
+              marginTop: 25,
+              padding: 20,
+              borderRadius: 12,
+              background: "#111827",
+              border: "1px solid #333",
+              fontSize: 20,
+            }}
+          >
+            {result}
+          </div>
+        )}
+      </div>
+    </main>
+  );
+                  }
