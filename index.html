@@ -1,10 +1,339 @@
-<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>AXIORA</title><style>
-body{margin:0;background:#07111f;color:white;font-family:Arial}main{max-width:720px;margin:auto;padding:24px}.card{margin-top:8vh;padding:28px;border:1px solid #294d6b;border-radius:20px;background:#0d2035}.logo{color:#52b6ff;letter-spacing:6px;font-weight:bold}button{padding:14px 18px;margin:6px;border:0;border-radius:10px;background:#183b5a;color:white;font-size:16px}button.sel,button.primary{background:#2699f5}.bar{height:7px;background:#19354d;margin:10px 0}.bar i{display:block;height:100%;background:#2699f5}.q{font-size:21px;line-height:1.5;margin:30px 0}.note{padding:12px;background:#182637;border-radius:10px;color:#b9c8d6}</style></head><body><main><div class="card" id="app"></div></main><script>
-const qs=Array.from({length:35},(_,i)=>"AXIORA Question "+(i+1)+": ఈ statement నాకు ఎంతవరకు సరిపోతుంది?");
-const names=["Analytical","Creative","Leadership","Communication","Support","Systems","Adaptability"];let a=Array(35).fill(null),i=0,A=document.getElementById("app");
-function home(){A.innerHTML='<div class="logo">AXIORA</div><h1>Discover Your Natural Strength Profile.</h1><p>35 questions · 7 dimensions · AXIORA V1.0 Prototype</p><button class="primary" onclick="start()">Start Assessment</button>'}
-function start(){a.fill(null);i=0;show()}
-function show(){A.innerHTML='<div class="logo">AXIORA</div><p>Question '+(i+1)+' / 35</p><div class="bar"><i style="width:'+((i+1)/35*100)+'%"></i></div><div class="q">'+qs[i]+'</div>'+[1,2,3,4,5].map(v=>'<button class="'+(a[i]==v?'sel':'')+'" onclick="pick('+v+')">'+v+'</button>').join('')+'<br><button class="primary" '+(a[i]==null?'disabled':'')+' onclick="next()">'+(i==34?'Analyze My Profile':'Next →')+'</button>'}
-function pick(v){a[i]=v;show()}function next(){if(a[i]==null)return;if(i<34){i++;show()}else result()}
-function result(){let s={};for(let f=0;f<7;f++){let raw=a.slice(f*5,f*5+5).reduce((x,y)=>x+y,0);s[names[f]]=(raw-5)/20*100}let v=Object.values(s),avg=v.reduce((x,y)=>x+y,0)/7,sd=Math.sqrt(v.reduce((x,y)=>x+(y-avg)**2,0)/7),f8=avg*(.6+.4*Math.max(0,100-2.5*sd)/100),r=Object.entries(s).sort((x,y)=>y[1]-x[1]),c=r[0][1]>=60?"Primary":"Insufficient";if(v.every(x=>x>=60)&&Math.max(...v)-Math.min(...v)<=15&&f8>=70)c="Balanced";else if(r[0][1]>=75&&r[1][1]>=70&&r[0][1]-r[1][1]<=7)c="Hybrid";A.innerHTML='<div class="logo">AXIORA</div><h1>Your Profile</h1><h2>'+c+'</h2>'+r.map(x=>'<p><b>'+x[0]+'</b>: '+x[1].toFixed(2)+'</p>').join('')+'<h3>F8: '+f8.toFixed(2)+'</h3><div class="note">AXIORA V1.0 is a working prototype, not a scientifically validated psychological assessment.</div><button class="primary" onclick="home()">Start Again</button>'}home();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIORA Name Calculator</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#07111f;
+  color:white;
+}
+
+.container{
+  max-width:650px;
+  margin:auto;
+  padding:25px 18px 40px;
+}
+
+.logo{
+  text-align:center;
+  font-size:42px;
+  font-weight:bold;
+  letter-spacing:3px;
+  margin-top:20px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#aeb8c7;
+  margin:8px 0 30px;
+}
+
+.card{
+  background:#101d2e;
+  border:1px solid #263852;
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:20px;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  border-radius:10px;
+  border:1px solid #40536d;
+  background:#07111f;
+  color:white;
+  font-size:18px;
+  outline:none;
+}
+
+button{
+  width:100%;
+  margin-top:15px;
+  padding:15px;
+  border:0;
+  border-radius:10px;
+  background:#20c997;
+  color:#06131d;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.result{
+  display:none;
+}
+
+.name{
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.numbers{
+  text-align:center;
+  font-size:20px;
+  color:#9ee7d2;
+  word-break:break-word;
+}
+
+.total{
+  text-align:center;
+  font-size:38px;
+  font-weight:bold;
+  margin:20px 0 5px;
+}
+
+.energy{
+  text-align:center;
+  font-size:25px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.energy-desc{
+  text-align:center;
+  color:#aeb8c7;
+  margin-top:5px;
+}
+
+.error{
+  color:#ff8b8b;
+  text-align:center;
+  margin-top:12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th,td{
+  padding:10px 6px;
+  border-bottom:1px solid #293b55;
+  text-align:center;
+}
+
+th{
+  color:#9ee7d2;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">AXIORA</div>
+
+  <div class="subtitle">
+    Name Number Calculator
+  </div>
+
+  <div class="card">
+
+    <label for="nameInput">Enter Your Name</label>
+
+    <input
+      id="nameInput"
+      type="text"
+      placeholder="Example: JAYAPRAKASH"
+    >
+
+    <button onclick="calculate()">
+      Calculate AXIORA Number
+    </button>
+
+    <div id="error" class="error"></div>
+
+  </div>
+
+  <div id="result" class="card result">
+
+    <div id="displayName" class="name"></div>
+
+    <div id="displayNumbers" class="numbers"></div>
+
+    <div id="displayTotal" class="total"></div>
+
+    <div id="displayEnergy" class="energy"></div>
+
+    <div id="displayEnergyDesc" class="energy-desc"></div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>AXIORA Alphabet Matrix</h2>
+
+    <table>
+      <tr>
+        <th>Number</th>
+        <th>Letters</th>
+      </tr>
+
+      <tr><td>1</td><td>A, K, T</td></tr>
+      <tr><td>2</td><td>B, D, N, V</td></tr>
+      <tr><td>3</td><td>H, R</td></tr>
+      <tr><td>4</td><td>F, P, Z</td></tr>
+      <tr><td>5</td><td>B, L, U</td></tr>
+      <tr><td>6</td><td>I, O, X</td></tr>
+      <tr><td>7</td><td>G, Q, Y</td></tr>
+      <tr><td>8</td><td>C, J, S</td></tr>
+      <tr><td>9</td><td>E, M, W</td></tr>
+    </table>
+
+  </div>
+
+</div>
+
+<script>
+
+/* AXIORA OFFICIAL ALPHABET MAPPING */
+
+const AXIORA = {
+  A:1,
+  B:5,
+  C:8,
+  D:2,
+  E:9,
+  F:4,
+  G:7,
+  H:3,
+  I:6,
+  J:8,
+  K:1,
+  L:5,
+  M:9,
+  N:2,
+  O:6,
+  P:4,
+  Q:7,
+  R:3,
+  S:8,
+  T:1,
+  U:5,
+  V:2,
+  W:9,
+  X:6,
+  Y:7,
+  Z:4
+};
+
+/* AXIORA ENERGY MAPPING */
+
+const ENERGY = {
+  1: ["Pioneer", "Initiative and leadership"],
+  2: ["Harmony", "Balance and cooperation"],
+  3: ["Creator", "Creativity and expression"],
+  4: ["Builder", "Structure and stability"],
+  5: ["Explorer", "Freedom and exploration"],
+  6: ["Nurturer", "Care and responsibility"],
+  7: ["Seeker", "Knowledge and inner search"],
+  8: ["Achiever", "Achievement and power"],
+  9: ["Visionary", "Vision and higher purpose"]
+};
+
+function calculate(){
+
+  const input =
+    document.getElementById("nameInput").value
+    .toUpperCase()
+    .replace(/[^A-Z]/g,"");
+
+  const error =
+    document.getElementById("error");
+
+  const result =
+    document.getElementById("result");
+
+  if(!input){
+
+    error.textContent =
+      "Please enter a name.";
+
+    result.style.display="none";
+
+    return;
+  }
+
+  let numbers=[];
+  let total=0;
+
+  for(const letter of input){
+
+    if(AXIORA[letter]){
+
+      numbers.push(AXIORA[letter]);
+
+      total += AXIORA[letter];
+
+    }
+
+  }
+
+  const energyNumber =
+    reduceToSingleNumber(total);
+
+  const energy =
+    ENERGY[energyNumber];
+
+  document.getElementById("displayName")
+    .textContent=input;
+
+  document.getElementById("displayNumbers")
+    .textContent=numbers.join(" + ");
+
+  document.getElementById("displayTotal")
+    .textContent="Total: " + total;
+
+  document.getElementById("displayEnergy")
+    .textContent=
+      energyNumber + " — " + energy[0];
+
+  document.getElementById("displayEnergyDesc")
+    .textContent=energy[1];
+
+  error.textContent="";
+
+  result.style.display="block";
+}
+
+function reduceToSingleNumber(number){
+
+  while(number > 9){
+
+    number =
+      String(number)
+      .split("")
+      .reduce(
+        (sum,digit) =>
+          sum + Number(digit),
+        0
+      );
+
+  }
+
+  return number;
+}
+
+</script>
+
+</body>
+      </html>
