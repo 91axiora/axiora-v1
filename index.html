@@ -1,1 +1,577 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIORA — Name & Crystal Calculator</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(135deg,#061018,#0b1822,#07141c);
+  color:#fff;
+}
+
+.container{
+  width:100%;
+  max-width:650px;
+  margin:auto;
+  padding:24px 16px 40px;
+}
+
+.logo{
+  text-align:center;
+  font-size:42px;
+  font-weight:800;
+  letter-spacing:5px;
+  margin-top:20px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#9fc8c9;
+  margin:8px 0 30px;
+  font-size:14px;
+}
+
+.card{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:18px;
+  box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+label{
+  display:block;
+  margin-bottom:9px;
+  color:#b8dfe0;
+  font-size:14px;
+}
+
+input{
+  width:100%;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background:#07141c;
+  color:#fff;
+  font-size:18px;
+  outline:none;
+}
+
+input:focus{
+  border-color:#74d6d1;
+}
+
+button{
+  width:100%;
+  margin-top:14px;
+  padding:16px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#66d9d1,#38aaa7);
+  color:#031012;
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+.hidden{
+  display:none;
+}
+
+.result-title{
+  color:#91e1dd;
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.name{
+  font-size:30px;
+  font-weight:700;
+  margin-bottom:18px;
+  word-break:break-word;
+}
+
+.number{
+  font-size:64px;
+  font-weight:800;
+  text-align:center;
+  margin:8px 0;
+}
+
+.energy{
+  text-align:center;
+  font-size:25px;
+  font-weight:700;
+  color:#a8e8e4;
+}
+
+.info{
+  margin-top:18px;
+  line-height:1.7;
+  color:#d8eeee;
+}
+
+.letters{
+  line-height:2;
+  font-size:16px;
+  word-break:break-word;
+}
+
+.crystal-box{
+  margin-top:20px;
+  padding:18px;
+  border-radius:16px;
+  background:rgba(108,215,208,.08);
+  border:1px solid rgba(108,215,208,.18);
+}
+
+.crystal-name{
+  color:#9be6e1;
+  font-size:20px;
+  font-weight:700;
+  line-height:1.5;
+}
+
+.small{
+  font-size:12px;
+  color:#8baaaa;
+  line-height:1.6;
+  margin-top:18px;
+}
+
+.footer{
+  text-align:center;
+  color:#668080;
+  font-size:12px;
+  margin-top:25px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">AXIORA</div>
+
+  <div class="subtitle">
+    Name • Energy • Crystal Guidance
+  </div>
+
+  <div class="card">
+
+    <label for="nameInput">Enter your name</label>
+
+    <input
+      id="nameInput"
+      type="text"
+      placeholder="Example: Nandoo"
+      autocomplete="off"
+    >
+
+    <button onclick="calculate()">
+      Calculate AXIORA
+    </button>
+
+  </div>
+
+
+  <div id="result" class="card hidden">
+
+    <div class="result-title">AXIORA RESULT</div>
+
+    <div id="displayName" class="name"></div>
+
+    <div class="result-title">Letter Calculation</div>
+
+    <div id="displayLetters" class="letters"></div>
+
+    <div class="result-title" style="margin-top:18px;">
+      Total Number
+    </div>
+
+    <div id="displayTotal" class="number"></div>
+
+    <div class="result-title">AXIORA Number</div>
+
+    <div id="displayNumber" class="number"></div>
+
+    <div id="displayEnergy" class="energy"></div>
+
+    <div id="displayMeaning" class="info"></div>
+
+    <div class="crystal-box">
+
+      <div class="result-title">
+        General Crystal Suggestions
+      </div>
+
+      <div id="displayCrystal" class="crystal-name"></div>
+
+      <div id="displayCrystalReason" class="info"></div>
+
+    </div>
+
+    <div class="small">
+      Crystal suggestions are general symbolic/intention-based
+      associations and are not medical or scientific treatments.
+    </div>
+
+  </div>
+
+
+  <div class="footer">
+    AXIORA V1.0 • Name & Crystal Guidance
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   AXIORA ALPHABET MATRIX
+   Internal system data — not displayed to users
+   ========================================================= */
+
+const AXIORA = {
+  A:1,
+  B:5,
+  C:8,
+  D:2,
+  E:9,
+  F:4,
+  G:7,
+  H:3,
+  I:6,
+  J:8,
+  K:1,
+  L:5,
+  M:9,
+  N:2,
+  O:6,
+  P:4,
+  Q:7,
+  R:3,
+  S:8,
+  T:1,
+  U:5,
+  V:2,
+  W:9,
+  X:6,
+  Y:7,
+  Z:4
+};
+
+
+/* =========================================================
+   AXIORA ENERGY
+   ========================================================= */
+
+const ENERGY = {
+
+  1:{
+    name:"Pioneer",
+    meaning:
+      "Initiative, leadership, independence, confidence and the ability to begin new paths."
+  },
+
+  2:{
+    name:"Harmony",
+    meaning:
+      "Cooperation, diplomacy, patience, balance, partnership and emotional harmony."
+  },
+
+  3:{
+    name:"Creator",
+    meaning:
+      "Creativity, expression, communication, enthusiasm and imaginative thinking."
+  },
+
+  4:{
+    name:"Builder",
+    meaning:
+      "Stability, discipline, structure, practical progress and steady development."
+  },
+
+  5:{
+    name:"Explorer",
+    meaning:
+      "Freedom, curiosity, adaptability, movement, optimism and new experiences."
+  },
+
+  6:{
+    name:"Nurturer",
+    meaning:
+      "Care, responsibility, compassion, harmony, family connection and supportive energy."
+  },
+
+  7:{
+    name:"Seeker",
+    meaning:
+      "Reflection, learning, intuition, analysis, inner exploration and search for deeper understanding."
+  },
+
+  8:{
+    name:"Achiever",
+    meaning:
+      "Ambition, organization, confidence, grounded action, achievement and material discipline."
+  },
+
+  9:{
+    name:"Visionary",
+    meaning:
+      "Broad vision, compassion, wisdom, idealism, imagination and higher-purpose intention."
+  }
+
+};
+
+
+/* =========================================================
+   GENERAL NUMBER-WISE CRYSTAL SUGGESTIONS
+   ========================================================= */
+
+const CRYSTALS = {
+
+  1:{
+    name:"Carnelian • Tiger's Eye",
+    reason:
+      "Generally associated with initiative, confidence, courage and action."
+  },
+
+  2:{
+    name:"Rose Quartz • Moonstone",
+    reason:
+      "Generally associated with harmony, emotional balance, cooperation and gentle energy."
+  },
+
+  3:{
+    name:"Citrine • Carnelian",
+    reason:
+      "Generally associated with creativity, expression, enthusiasm and confidence."
+  },
+
+  4:{
+    name:"Green Aventurine • Tiger's Eye",
+    reason:
+      "Generally associated with stability, practical progress, confidence and grounded action."
+  },
+
+  5:{
+    name:"Citrine • Tiger's Eye",
+    reason:
+      "Generally associated with optimism, confidence, exploration and positive movement."
+  },
+
+  6:{
+    name:"Rose Quartz • Green Aventurine",
+    reason:
+      "Generally associated with care, harmony, compassion and supportive energy."
+  },
+
+  7:{
+    name:"Amethyst • Clear Quartz",
+    reason:
+      "Generally associated with reflection, clarity, meditation and inner exploration."
+  },
+
+  8:{
+    name:"Black Tourmaline • Smoky Quartz",
+    reason:
+      "Generally associated with grounding, stability, confidence and focused action."
+  },
+
+  9:{
+    name:"Amethyst • Clear Quartz",
+    reason:
+      "Generally associated with clarity, reflection, wisdom and visionary intention."
+  }
+
+};
+
+
+/* =========================================================
+   NUMBER REDUCTION
+   ========================================================= */
+
+function reduceNumber(value){
+
+  while(value > 9){
+
+    value = String(value)
+      .split("")
+      .reduce(function(sum,digit){
+        return sum + Number(digit);
+      },0);
+
+  }
+
+  return value;
+}
+
+
+/* =========================================================
+   CALCULATE
+   ========================================================= */
+
+function calculate(){
+
+  const input =
+    document.getElementById("nameInput").value.trim();
+
+  if(!input){
+
+    alert("Please enter a name.");
+
+    return;
+  }
+
+
+  const cleanName =
+    input
+      .toUpperCase()
+      .replace(/[^A-Z]/g,"");
+
+
+  if(!cleanName){
+
+    alert("Please enter English letters A-Z.");
+
+    return;
+  }
+
+
+  let total = 0;
+
+  const letterParts = [];
+
+
+  for(const letter of cleanName){
+
+    const value = AXIORA[letter];
+
+    if(value){
+
+      total += value;
+
+      letterParts.push(
+        letter + " = " + value
+      );
+
+    }
+
+  }
+
+
+  const reduced =
+    reduceNumber(total);
+
+
+  const energy =
+    ENERGY[reduced];
+
+  const crystal =
+    CRYSTALS[reduced];
+
+
+  /* Display */
+
+  document
+    .getElementById("result")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("displayName")
+    .textContent = input;
+
+
+  document
+    .getElementById("displayLetters")
+    .textContent =
+      letterParts.join("  •  ");
+
+
+  document
+    .getElementById("displayTotal")
+    .textContent = total;
+
+
+  document
+    .getElementById("displayNumber")
+    .textContent = reduced;
+
+
+  document
+    .getElementById("displayEnergy")
+    .textContent =
+      energy.name;
+
+
+  document
+    .getElementById("displayMeaning")
+    .textContent =
+      energy.meaning;
+
+
+  document
+    .getElementById("displayCrystal")
+    .textContent =
+      crystal.name;
+
+
+  document
+    .getElementById("displayCrystalReason")
+    .textContent =
+      crystal.reason;
+
+
+  document
+    .getElementById("result")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+}
+
+
+/* =========================================================
+   ENTER KEY
+   ========================================================= */
+
+document
+  .getElementById("nameInput")
+  .addEventListener(
+    "keydown",
+    function(event){
+
+      if(event.key === "Enter"){
+
+        calculate();
+
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
